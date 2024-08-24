@@ -1,39 +1,23 @@
-# Background Effects Sample Application
-This sample application shows the result of applying some background visual effects by using the [@vonage/ml-transformers](https://www.npmjs.com/package/@vonage/ml-transformers) library.
-# Demo
-You can see a live demo of this sample running [here](https://vonage-background-enchantments-sample.s3.amazonaws.com/index.html)
-# Building the application
-## Configure the environment
-    npm i
-## Run dev version
+Overview
+======================
+This project is based on Vonage's [Media-Transformers-BackgroundEnchantments](https://github.com/Vonage/vonage-media-transformers-samples/tree/main/ML-Transformers/BackgroundEnchantments) web sample application.
 
-    npm run dev
+Changes Made
+======================
+* Integrated the app with OpenTok to establish a video call with a stream that applies background enchantments
+* Added a mouse hover instruction to guide users when they hover over
+* Added a container for the publisher and the subscriber under the original container
 
-## Run production version
+How It Works
+======================
+* Clicking the `BLUR` button applies a `High (10px)` strength blur. Clicking it increases the blur with a custom radius of `30px`.
+* Clicking the `VIRTUAL` button applies a background image. Clicking it again will change the background to another image.
 
-    npm run build
-    npm run preview
+How to Launch the App
+======================
+Install the dependencies and run the app as same as the instructions explained here [ML-Transformers/BackgroundEnchantments](https://github.com/Vonage/vonage-media-transformers-samples/tree/main/ML-Transformers/BackgroundEnchantments).
 
-# Using the library in a real use case
-This sample apps renders the result of the video captured from the camera on the right side canvas.
-Some real use case for this library would be using it along with [OT.Publisher](https://tokbox.com/developer/guides/vonage-media-processor/js/#publisher-setvideomediaprocessorconnector-method).
-In our *main.ts* you can see this code chunk:
-```typescript
-...
-videoSource_.setMediaProcessorConnector(connector).then(() => {
-	console.log('ok')
-}).catch( e  => {
-	console.error(e)
-})
-...
-```
-All you need to do is changed it with this code:
-```typescript
-...
-publisher.setVideoMediaProcessorConnector(connector).then(() => {
-    console.log('ok')
-}).catch( e  => {
-	console.error(e)
-})
-...
-```
+App Screenshots
+======================
+<img width="1023" alt="Screenshot 2024-08-24 at 6 31 36 PM" src="https://github.com/user-attachments/assets/1e9bb03f-c33f-475f-871a-366227accd85">
+<img width="1023" alt="Screenshot 2024-08-24 at 6 32 28 PM" src="https://github.com/user-attachments/assets/05edfe42-1ad8-43bb-a056-dcc5b412276b">
