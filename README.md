@@ -25,23 +25,138 @@ How to Launch the App
 
 Added Changes Details
 ======================
+## **Initial settings for using OpenTok.js**  
+In the original code, the TypeScript compiler does not recognize the `OT` namespace. To resolve this, you need to install the OpenTok.js type definition file. After that, run `npm install`.
+```
+// in package.json
+  "dependencies": {
+    "@opentok/client": "^2.28.1",
+    ...
+  }
+```
+## **Get media stream functionality**  
+Retrieve the current media stream from the `CameraSource` class.
+```
+// in camera-source.ts
+  getStream(): MediaStream | undefined {
+    return this.stream_;
+  }
+```
+Get a processed video stream after applying a background filter to the original video track.
+```
+// in main.ts
+  async function getProcessedStream(): Promise<MediaStream | undefined> {
+    if (processor && processor.getConnector()) {
+      const connector = processor.getConnector();
+      try {
+        // Use getStream I added in js/camera-source.ts
+        const originalTrack = source.getStream()?.getVideoTracks()[0];
+        if (!originalTrack) {
+          throw new Error('No original video track available.');
+        }
+        const processedTrack = await connector.setTrack(originalTrack);
+        const processedStream = new MediaStream();
+        processedStream.addTrack(processedTrack);
+        return processedStream;
+      } catch (error) {
+        console.error('Error getting processed stream:', error);
+        return undefined;
+      }
+    }
+    return undefined;
+  }
+```
+Calls the `getProcessedStream()` function to retrieve a processed media stream.
+```
+// in main.ts
+try {
+      const mediaStream = await getProcessedStream(); 
+
+      if (!mediaStream) {
+        throw new Error('Media stream is not available.');
+      }
+```
+## **Publish functionality**  
+Sets up a publisher with the first video track from the `mediaStream` object and set as a video source.
+```
+// in main.ts
+      publisher = OT.initPublisher('publisher', {
+        videoSource: mediaStream.getVideoTracks()[0], 
+        insertMode: 'append',
+        style: {
+          audioLevelDisplayMode: "on",
+          archiveStatusDisplayMode: "auto",
+          buttonDisplayMode: "auto",
+          videoDisabledDisplayMode: "on"
+        }
+      });
+```
+## **Session functionality** 
+Join an OpenTok session and publish the video.
+```
+// in main.ts
+      const session = OT.initSession(apiKey, sessionId);
+
+      session.on('streamCreated', (event) => {
+        const subscriberOptions: OT.SubscriberProperties = {
+          insertMode: 'append',
+          style: {
+            audioBlockedDisplayMode: "auto",
+            audioLevelDisplayMode: "on",
+            buttonDisplayMode: "auto",
+            videoDisabledDisplayMode: "on"
+          }
+        };
+        session.subscribe(event.stream, 'subscriber', subscriberOptions, handleError);
+      });
+
+      session.connect(token, (error) => {
+        if (error) {
+          handleError(error);
+        } else {
+          session.publish(publisher, handleError);
+        }
+      });
+    } catch (error) {
+      console.error('Error publishing to OpenTok: ', error);
+    }
+```
+## **Hide the main card** 
+Hide the main card once the publish button is clicked.
+```
+// in main.ts
+hideCardOnSuccess();
+
+  function hideCardOnSuccess() {
+    // Hide the main card once the publish button is clicked
+    const videoWrappers = document.querySelectorAll('.video-wrapper') as NodeListOf<HTMLElement>;
+    videoWrappers.forEach((element) => {
+      element.style.display = 'none';
+    });
+  }
+```
 ## **Load session credentials from config.js**  
-Let TypeScript compiler to process .js files .
+Allow the TypeScript compiler to process `.js` files.
 ```
 // in tsconfig.json
 "allowJs": true
 ```
-Import the variables of session credentials from config.js
+Add a `config.js` in the `JS` folder and export constants so they can be imported and used in `main.ts`.
+```
+// in config.js
+export const SAMPLE_SERVER_BASE_URL = 'http://localhost:5000/';
+export const API_KEY = '';
+export const SESSION_ID = '';
+export const TOKEN = '';
+```
+Import the session credentials from `config.js`.
 ```
 // in main.ts
 import { SAMPLE_SERVER_BASE_URL, API_KEY, SESSION_ID, TOKEN } from "./js/config";
 ```
-Get session credentials from config.js
+Get session credentials from `config.js`.
 ```
 // in main.ts
-  async function publishToOT() {
-
-    // Get session credentials from config.js
     if (API_KEY && TOKEN && SESSION_ID) {
       apiKey = API_KEY;
       sessionId = SESSION_ID;
@@ -58,4 +173,95 @@ Get session credentials from config.js
         alert('Failed to get opentok sessionId and token. Make sure you have updated the config.js file.');
       }
     }
+```
+## **Publish button functionality**  
+Add a publish button inside of the preview component.
+```
+// in index.html
+<vwc-button connotation="cta" label="PUBLISH" layout="filled" icon="" trailingIcon
+                id="publishBtn"></vwc-button>
+```
+Add an event listener.
+```
+// in main.ts
+document.getElementById("publishBtn")?.addEventListener("click", publishToOT);
+```
+Wrap all the added functionalities in the `publishToOT()` function.
+```
+ async function publishToOT() {
+ ...
+ }
+```
+## **Layout changes**  
+In the original application, all CSS was listed in `index.html`. Adding a container to display participants in the session and styling it would take too long, so I moved the CSS to an external file `CSS/app.css`.
+```
+// in index.html
+<link href="css/app.css" rel="stylesheet" type="text/css">
+```
+Style for participant view:
+```
+// in app.css
+.publisher-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.publisher-box,
+.subscriber-box {
+    width: 100%;
+    max-width: 300px;
+    aspect-ratio: 1.1;
+    /* border-radius: 8px; */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.publisher-header,
+.subscriber-header {
+    /* font-size: 1.2em; */
+    /* font-weight: bold; */
+    margin: 10px;
+    /* color: #333; */
+    text-align: center;
+}
+
+#publisher,
+#subscriber {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#publisher video,
+#subscriber video {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+```
+Style for mouse hover instruction:
+```
+// in app.css
+.maincardlayout .tooltiptext {
+    visibility: hidden;
+    width: 300px;
+    color: #fff;
+    border-radius: 5px;
+    padding: 10px 10px;
+    position: absolute;
+    top: 1%;
+    left: 1%;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: scale(0.9);
+}
+
+.maincardlayout:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+    background-color: rgba(51, 51, 51, 0.6);
+    transform: scale(1);
+}
 ```
