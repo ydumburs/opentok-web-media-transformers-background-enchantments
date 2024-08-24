@@ -1,6 +1,6 @@
 Overview
 ======================
-This project is based on Vonage's [Media-Transformers-BackgroundEnchantments](https://github.com/Vonage/vonage-media-transformers-samples/tree/main/ML-Transformers/BackgroundEnchantments) web sample application.
+This application is based on Vonage's [Media-Transformers-BackgroundEnchantments](https://github.com/Vonage/vonage-media-transformers-samples/tree/main/ML-Transformers/BackgroundEnchantments) web sample application.
 
 Changes Made
 ======================
