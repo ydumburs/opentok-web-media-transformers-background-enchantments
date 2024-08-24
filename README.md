@@ -10,12 +10,15 @@ Changes Made
 
 How It Works
 ======================
-* Clicking the `BLUR` button applies a `High (10px)` strength blur. Clicking it increases the blur with a custom radius of `30px`.
-* Clicking the `VIRTUAL` button applies a background image. Clicking it again will change the background to another image.
+WIP
 
 How to Launch the App
 ======================
-Install the dependencies and run the app as same as the instructions explained here [ML-Transformers/BackgroundEnchantments](https://github.com/Vonage/vonage-media-transformers-samples/tree/main/ML-Transformers/BackgroundEnchantments).
+1. Install the dependencies 
+```npm i```
+2. Add your session credentials on js/config.js
+3. Run dev server
+```npm run dev```
 
 App Screenshots
 ======================
