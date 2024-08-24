@@ -1,0 +1,103 @@
+body {
+    margin: 0px;
+}
+
+.headline {
+    text-align: center;
+}
+
+vwc-top-app-bar img {
+    margin-left: 16px
+}
+
+.maincard {
+    margin: 10 auto;
+    width: 58%;
+    max-width: 1120px;
+    height: fit-content;
+    display: block;
+}
+
+.maincardlayout {
+    display: grid;
+    grid-template-columns: 4fr 6fr;
+}
+
+.maincardlayout .tooltiptext {
+    visibility: hidden;
+    width: 300px;
+    color: #fff;
+    border-radius: 5px;
+    padding: 10px 10px;
+    position: absolute;
+    top: 1%;
+    left: 1%;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: scale(0.9);
+}
+
+.maincardlayout:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+    background-color: rgba(51, 51, 51, 0.6);
+    transform: scale(1);
+}
+
+.video-wrapper {
+    aspect-ratio: 1.1;
+    background-image: url(images/vonage.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: var(--vvd-color-canvas);
+    background-size: 100% auto;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--vvd-color-neutral-30);
+}
+
+.video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.publisher-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.publisher-box,
+.subscriber-box {
+    width: 100%;
+    max-width: 300px;
+    aspect-ratio: 1.1;
+    /* border-radius: 8px; */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.publisher-header,
+.subscriber-header {
+    /* font-size: 1.2em; */
+    /* font-weight: bold; */
+    margin: 10px;
+    /* color: #333; */
+    text-align: center;
+}
+
+#publisher,
+#subscriber {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#publisher video,
+#subscriber video {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
