@@ -12,7 +12,7 @@
             "WebWorker"
         ],
         "module": "commonjs",
-        "target": "es2019",
+        "target": "es2020",
         "moduleResolution": "Node",
         "strict": true,
         "esModuleInterop": true,
