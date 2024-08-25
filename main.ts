@@ -10,7 +10,7 @@ import {
   WebglSelfieSegmentationType,
 } from "@vonage/ml-transformers";
 import { setVonageMetadata } from "@vonage/media-processor";
-import { SAMPLE_SERVER_BASE_URL, API_KEY, SESSION_ID, TOKEN } from "./js/config";
+import { initializeSession } from './opentok';
 
 const MEDIA_ASSETS_URI: string =
   "https://vonage-background-enchantments-sample.s3.amazonaws.com/";
@@ -47,17 +47,6 @@ function $<T = any>(s: string) {
   const element = document.getElementById(s);
   if (!element) throw `Unable to find element #${s}`;
   return element as T;
-}
-
-let apiKey: string | undefined;
-let sessionId: string | undefined;
-let token: string | undefined;
-let publisher: OT.Publisher;
-
-function handleError(error: any) {
-  if (error) {
-    console.error(error);
-  }
 }
 
 async function main() {
@@ -123,104 +112,6 @@ async function main() {
     }
   }
 
-  async function publishToOT() {
-
-    // Get session credentials from config.js
-    if (API_KEY && TOKEN && SESSION_ID) {
-      apiKey = API_KEY;
-      sessionId = SESSION_ID;
-      token = TOKEN;
-    } else if (SAMPLE_SERVER_BASE_URL) {
-      try {
-        const response = await fetch(`${SAMPLE_SERVER_BASE_URL}/session`);
-        const json = await response.json();
-        apiKey = json.apiKey;
-        sessionId = json.sessionId;
-        token = json.token;
-      } catch (error) {
-        handleError(error);
-        alert('Failed to get opentok sessionId and token. Make sure you have updated the config.js file.');
-      }
-    }
-
-    try {
-      const mediaStream = await getProcessedStream(); // Get a MediaStream with a filter applied
-
-      if (!mediaStream) {
-        throw new Error('Media stream is not available.');
-      }
-
-      // Create OpenTok Publisher
-      publisher = OT.initPublisher('publisher', {
-        videoSource: mediaStream.getVideoTracks()[0], // Specify video track
-        insertMode: 'append',
-        style: {
-          audioLevelDisplayMode: "on",
-          archiveStatusDisplayMode: "auto",
-          buttonDisplayMode: "auto",
-          videoDisabledDisplayMode: "on"
-        }
-      });
-
-      // Create OpenTok Session
-      const session = OT.initSession(apiKey, sessionId);
-
-      session.on('streamCreated', (event) => {
-        const subscriberOptions: OT.SubscriberProperties = {
-          insertMode: 'append',
-          style: {
-            audioBlockedDisplayMode: "auto",
-            audioLevelDisplayMode: "on",
-            buttonDisplayMode: "auto",
-            videoDisabledDisplayMode: "on"
-          }
-        };
-        session.subscribe(event.stream, 'subscriber', subscriberOptions, handleError);
-      });
-
-      session.connect(token, (error) => {
-        if (error) {
-          handleError(error);
-        } else {
-          session.publish(publisher, handleError);
-        }
-      });
-    } catch (error) {
-      console.error('Error publishing to OpenTok: ', error);
-    }
-    hideCardOnSuccess();
-  }
-
-  async function getProcessedStream(): Promise<MediaStream | undefined> {
-    if (processor && processor.getConnector()) {
-      const connector = processor.getConnector();
-      try {
-        // Use getStream I added in js/camera-source.ts
-        const originalTrack = source.getStream()?.getVideoTracks()[0];
-        if (!originalTrack) {
-          throw new Error('No original video track available.');
-        }
-        const processedTrack = await connector.setTrack(originalTrack);
-        const processedStream = new MediaStream();
-        processedStream.addTrack(processedTrack);
-        return processedStream;
-      } catch (error) {
-        console.error('Error getting processed stream:', error);
-        return undefined;
-      }
-    }
-    return undefined;
-  }
-
-  function hideCardOnSuccess() {
-    // Hide the main card once the publish button is clicked
-    const videoWrappers = document.querySelectorAll('.video-wrapper') as NodeListOf<HTMLElement>;
-    videoWrappers.forEach((element) => {
-      element.style.display = 'none';
-    });
-  }
-
-
   const cameraSwitch = $("cameraswitch");
   const githubButton = $("githubButton");
   const vividButton = $("vividButton");
@@ -285,7 +176,7 @@ async function main() {
       ?.focus();
   });
 
-  document.getElementById("publishBtn")?.addEventListener("click", publishToOT);
+  document.getElementById("publishBtn")?.addEventListener("click", () => initializeSession(source, processor));
 
   await init();
 }
