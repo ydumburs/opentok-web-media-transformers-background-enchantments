@@ -44,7 +44,7 @@ Retrieve the current media stream from the `CameraSource` class.
 ```
 Get a processed video stream after applying a background filter to the original video track.
 ```
-// in main.ts
+// in opentok.ts
   async function getProcessedStream(): Promise<MediaStream | undefined> {
     if (processor && processor.getConnector()) {
       const connector = processor.getConnector();
@@ -68,7 +68,7 @@ Get a processed video stream after applying a background filter to the original 
 ```
 Calls the `getProcessedStream()` function to retrieve a processed media stream.
 ```
-// in main.ts
+// in opentok.ts
 try {
       const mediaStream = await getProcessedStream(); 
 
@@ -79,7 +79,7 @@ try {
 ## **Publish functionality**  
 Sets up a publisher with the first video track from the `mediaStream` object and set as a video source.
 ```
-// in main.ts
+// in opentok.ts
       publisher = OT.initPublisher('publisher', {
         videoSource: mediaStream.getVideoTracks()[0], 
         insertMode: 'append',
@@ -91,49 +91,16 @@ Sets up a publisher with the first video track from the `mediaStream` object and
         }
       });
 ```
-## **Session functionality** 
-Join an OpenTok session and publish the video.
-```
-// in main.ts
-      const session = OT.initSession(apiKey, sessionId);
-
-      session.on('streamCreated', (event) => {
-        const subscriberOptions: OT.SubscriberProperties = {
-          insertMode: 'append',
-          style: {
-            audioBlockedDisplayMode: "auto",
-            audioLevelDisplayMode: "on",
-            buttonDisplayMode: "auto",
-            videoDisabledDisplayMode: "on"
-          }
-        };
-        session.subscribe(event.stream, 'subscriber', subscriberOptions, handleError);
-      });
-
-      session.connect(token, (error) => {
-        if (error) {
-          handleError(error);
-        } else {
-          session.publish(publisher, handleError);
-        }
-      });
-    } catch (error) {
-      console.error('Error publishing to OpenTok: ', error);
-    }
-```
 ## **Hide the main card** 
 Hide the main card once the publish button is clicked.
 ```
-// in main.ts
-hideCardOnSuccess();
-
-  function hideCardOnSuccess() {
-    // Hide the main card once the publish button is clicked
+// in opentok.ts
+function hideCardOnSuccess() {
     const videoWrappers = document.querySelectorAll('.video-wrapper') as NodeListOf<HTMLElement>;
     videoWrappers.forEach((element) => {
-      element.style.display = 'none';
+        element.style.display = 'none';
     });
-  }
+}
 ```
 ## **Load session credentials from config.js**  
 Allow the TypeScript compiler to process `.js` files.
@@ -151,12 +118,9 @@ export const TOKEN = '';
 ```
 Import the session credentials from `config.js`.
 ```
-// in main.ts
+// in opentok.ts
 import { SAMPLE_SERVER_BASE_URL, API_KEY, SESSION_ID, TOKEN } from "./js/config";
-```
-Get session credentials from `config.js`.
-```
-// in main.ts
+
     if (API_KEY && TOKEN && SESSION_ID) {
       apiKey = API_KEY;
       sessionId = SESSION_ID;
@@ -181,16 +145,11 @@ Add a publish button inside of the preview component.
 <vwc-button connotation="cta" label="PUBLISH" layout="filled" icon="" trailingIcon
                 id="publishBtn"></vwc-button>
 ```
-Add an event listener.
+Set up a click event on the button and call the `initializeSession` function imported from the `opentok.ts`.
 ```
 // in main.ts
-document.getElementById("publishBtn")?.addEventListener("click", publishToOT);
-```
-Wrap all the added functionalities in the `publishToOT()` function.
-```
- async function publishToOT() {
- ...
- }
+import { initializeSession } from './opentok';
+document.getElementById("publishBtn")?.addEventListener("click", () => initializeSession(source, processor));
 ```
 ## **Layout changes**  
 In the original application, all CSS was listed in `index.html`. Adding a container to display participants in the session and styling it would take too long, so I moved the CSS to an external file `CSS/app.css`.
