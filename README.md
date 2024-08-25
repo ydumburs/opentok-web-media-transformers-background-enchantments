@@ -19,7 +19,7 @@ How to Launch the App
 ======================
 1. Install the dependencies 
 ```npm i```
-2. Add your session credentials on js/config.js
+2. Add your session credentials on `js/config.js`
 3. Run dev server
 ```npm run dev```
 
@@ -108,7 +108,7 @@ Allow the TypeScript compiler to process `.js` files.
 // in tsconfig.json
 "allowJs": true
 ```
-Add a `config.js` in the `JS` folder and export constants so they can be imported and used in `main.ts`.
+Add a `config.js` in the `js` folder and export constants so they can be imported and used in `main.ts`.
 ```
 // in config.js
 export const SAMPLE_SERVER_BASE_URL = 'http://localhost:5000/';
