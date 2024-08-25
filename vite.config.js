@@ -7,5 +7,8 @@ module.exports = defineConfig({
   build: {
     outDir: path.join(__dirname, "dist"),
     emptyOutDir: true
+  },
+  optimizeDeps: {
+    exclude: ["@opentok/client"]
   }
 })
