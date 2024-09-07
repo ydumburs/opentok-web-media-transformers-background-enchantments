@@ -26,13 +26,17 @@ How to Launch the App
 Added Changes Details
 ======================
 ## **Initial settings for using OpenTok.js**  
-In the original code, the TypeScript compiler does not recognize the `OT` namespace. To resolve this, you need to install the OpenTok.js type definition file. After that, run `npm install`.
+In the original code, the TypeScript compiler does not recognize the `OT` namespace. To resolve this, you need to install the OpenTok.js type definition file. 
 ```
 // in package.json
   "dependencies": {
     "@opentok/client": "^2.28.1",
     ...
   }
+```
+```
+// in opentok.ts
+import * as OpenTok from "@opentok/client";
 ```
 ## **Get media stream functionality**  
 Retrieve the current media stream from the `CameraSource` class.
@@ -119,23 +123,21 @@ export const TOKEN = '';
 Import the session credentials from `config.js`.
 ```
 // in opentok.ts
-import { SAMPLE_SERVER_BASE_URL, API_KEY, SESSION_ID, TOKEN } from "./js/config";
+import { SAMPLE_SERVER_BASE_URL, API_KEY, SESSION_ID, TOKEN } from "../js/config";
 
     if (API_KEY && TOKEN && SESSION_ID) {
-      apiKey = API_KEY;
-      sessionId = SESSION_ID;
-      token = TOKEN;
+        token = TOKEN;
+        session = OT.initSession(API_KEY, SESSION_ID);
     } else if (SAMPLE_SERVER_BASE_URL) {
-      try {
-        const response = await fetch(`${SAMPLE_SERVER_BASE_URL}/session`);
-        const json = await response.json();
-        apiKey = json.apiKey;
-        sessionId = json.sessionId;
-        token = json.token;
-      } catch (error) {
-        handleError(error);
-        alert('Failed to get opentok sessionId and token. Make sure you have updated the config.js file.');
-      }
+        try {
+            const response = await fetch(`${SAMPLE_SERVER_BASE_URL}/session`);
+            const json = await response.json();
+            token = json.token;
+            session = OT.initSession(json.apiKey, json.sessionId);
+        } catch (error) {
+            handleError(error);
+            return;
+        }
     }
 ```
 ## **Publish button functionality**  
