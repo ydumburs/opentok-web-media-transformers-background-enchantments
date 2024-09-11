@@ -6,18 +6,18 @@ import { SAMPLE_SERVER_BASE_URL, API_KEY, SESSION_ID, TOKEN } from "../js/config
 export async function initializeSession(source: CameraSource, processor: VonageMediaProcessor) {
 
     let token: string | undefined;
-    let session: OT.Session | undefined;
-    let publisher: OT.Publisher;
+    let session: OpenTok.Session | undefined;
+    let publisher: OpenTok.Publisher;
 
     if (API_KEY && TOKEN && SESSION_ID) {
         token = TOKEN;
-        session = OT.initSession(API_KEY, SESSION_ID);
+        session = OpenTok.initSession(API_KEY, SESSION_ID);
     } else if (SAMPLE_SERVER_BASE_URL) {
         try {
             const response = await fetch(`${SAMPLE_SERVER_BASE_URL}/session`);
             const json = await response.json();
             token = json.token;
-            session = OT.initSession(json.apiKey, json.sessionId);
+            session = OpenTok.initSession(json.apiKey, json.sessionId);
         } catch (error) {
             handleError(error);
             return;
@@ -31,7 +31,7 @@ export async function initializeSession(source: CameraSource, processor: VonageM
             throw new Error('Media stream is not available.');
         }
 
-        publisher = OT.initPublisher('publisher', {
+        publisher = OpenTok.initPublisher('publisher', {
             videoSource: mediaStream.getVideoTracks()[0],
             insertMode: 'append',
             style: {
@@ -43,7 +43,7 @@ export async function initializeSession(source: CameraSource, processor: VonageM
         });
         if (session && token) {
             session.on('streamCreated', (event) => {
-                const subscriberOptions: OT.SubscriberProperties = {
+                const subscriberOptions: OpenTok.SubscriberProperties = {
                     insertMode: 'append',
                     style: {
                         audioBlockedDisplayMode: "auto",
