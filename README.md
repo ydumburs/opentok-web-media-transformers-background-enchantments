@@ -1,6 +1,6 @@
 Overview
 ======================
-This application is based on Vonage Media Transformers' [BackgroundEnchantments](https://github.com/Vonage/vonage-media-transformers-samples/tree/main/ML-Transformers/BackgroundEnchantments) web sample application.
+This app integrates the OpenTok Video API with Vonage’s [BackgroundEnchantments](https://github.com/Vonage/vonage-media-transformers-samples/tree/main/ML-Transformers/BackgroundEnchantments), enabling video calls with background filters applied.
 
 Changes Made
 ======================
@@ -26,11 +26,11 @@ How to Launch the App
 Added Changes Details
 ======================
 ## **Initial settings for using OpenTok.js**  
-In the original code, the TypeScript compiler does not recognize the `OT` namespace. To resolve this, you need to install the OpenTok.js type definition file. 
+The @opentok/client package has been added to use the OpenTok Video API. 
 ```
 // in package.json
   "dependencies": {
-    "@opentok/client": "^2.28.1",
+    "@opentok/client": "^2.28.2",
     ...
   }
 ```
@@ -84,7 +84,7 @@ try {
 Sets up a publisher with the first video track from the `mediaStream` object and set as a video source.
 ```
 // in opentok.ts
-      publisher = OT.initPublisher('publisher', {
+      publisher = OpenTok.initPublisher('publisher', {
         videoSource: mediaStream.getVideoTracks()[0], 
         insertMode: 'append',
         style: {
@@ -112,7 +112,7 @@ Allow the TypeScript compiler to process `.js` files.
 // in tsconfig.json
 "allowJs": true
 ```
-Add a `config.js` in the `js` folder and export constants so they can be imported and used in `main.ts`.
+Add a `config.js` in the `js` folder and export constants so they can be imported and used in `opentok.ts`.
 ```
 // in config.js
 export const SAMPLE_SERVER_BASE_URL = 'http://localhost:5000/';
@@ -127,13 +127,13 @@ import { SAMPLE_SERVER_BASE_URL, API_KEY, SESSION_ID, TOKEN } from "../js/config
 
     if (API_KEY && TOKEN && SESSION_ID) {
         token = TOKEN;
-        session = OT.initSession(API_KEY, SESSION_ID);
+        session = OpenTok.initSession(API_KEY, SESSION_ID);
     } else if (SAMPLE_SERVER_BASE_URL) {
         try {
             const response = await fetch(`${SAMPLE_SERVER_BASE_URL}/session`);
             const json = await response.json();
             token = json.token;
-            session = OT.initSession(json.apiKey, json.sessionId);
+            session = OpenTok.initSession(json.apiKey, json.sessionId);
         } catch (error) {
             handleError(error);
             return;
