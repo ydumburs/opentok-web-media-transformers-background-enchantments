@@ -1,17 +1,20 @@
 Overview
 ======================
-This app integrates the OpenTok Video API with Vonage’s [BackgroundEnchantments](https://github.com/Vonage/vonage-media-transformers-samples/tree/main/ML-Transformers/BackgroundEnchantments), enabling video calls with background filters applied.
+This app integrates the OpenTok Video API with Vonage’s [BackgroundEnchantments](https://github.com/Vonage/vonage-media-transformers-samples/tree/main/ML-Transformers/BackgroundEnchantments), enabling video calls with background filters applied. This app is designed for the `OpenTok` environment. To use it in the `Vonage Unified Video` environment, please see []().
 
 Changes Made
 ======================
 * Integrated the app with OpenTok to establish a video call with a stream that applies background enchantments
 * Added a mouse hover instruction to guide users when they hover over
+* Added the background blur beyond the `High` preset using a custom radius
 * Added a container for the publisher and the subscriber under the original container
 
 How It Works
 ======================
 * Mouse hover the main card area to see the instruction.  
   <img width="500" alt="Screenshot 2024-08-24 at 6 31 36 PM" src="https://github.com/user-attachments/assets/1e9bb03f-c33f-475f-871a-366227accd85">  
+* Here is a list of all the background filter options. `Blur Very High` is a new option that is higher than the `High` preset.  
+  <img width="150" alt="Screenshot 2024-09-11 at 3 45 19 PM" src="https://github.com/user-attachments/assets/1b0f3b22-e062-453e-bb0a-30e82b22937b">  
 * By publishing the stream as instructed in mouse hover text, the application will show the video feeds in a new container and hide the main card to provide a cleaner view of the streaming content.  
   <img width="500" alt="Screenshot 2024-08-24 at 6 32 28 PM" src="https://github.com/user-attachments/assets/05edfe42-1ad8-43bb-a056-dcc5b412276b">  
 
@@ -226,3 +229,7 @@ Style for mouse hover instruction:
     transform: scale(1);
 }
 ```
+How to Use this app in Vonage Unified environment
+======================
+1. Change the library name from `@opentok/client` to `@vonage/client-sdk-video` in `package.json` and `src/opentok.ts`.
+2. Obtain Session credentials from the Unified dashboard and add them in `js/config.js`.
