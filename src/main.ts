@@ -23,6 +23,10 @@ const configs: { [key: string]: MediaProcessorConfig } = {
     transformerType: BackgroundTransformerType.BackgroundBlur,
     radius: BlurRadius.High,
   },
+  blurVeryHigh: {
+    transformerType: BackgroundTransformerType.BackgroundBlur,
+    radius: 30,
+  },
   virtual: {
     transformerType: BackgroundTransformerType.VirtualBackground,
     backgroundAssetUri: `${MEDIA_ASSETS_URI}virtual.jpeg`,
