@@ -1,6 +1,6 @@
 Overview
 ======================
-This app integrates the OpenTok Video API with Vonage’s [BackgroundEnchantments](https://github.com/Vonage/vonage-media-transformers-samples/tree/main/ML-Transformers/BackgroundEnchantments), enabling video calls with background filters applied. This app is designed for the `OpenTok` environment. To use it in the `Vonage Unified Video` environment, please see []().
+This app integrates the OpenTok Video API with Vonage’s [BackgroundEnchantments](https://github.com/Vonage/vonage-media-transformers-samples/tree/main/ML-Transformers/BackgroundEnchantments), enabling video calls with background filters applied. This app is designed for the `OpenTok` environment. To use it in the `Vonage Unified Video` environment, please see [How to Use in Vonage Unified environment](https://github.com/ydumburs/opentok-web-media-transformers-background-enchantments/blob/main/README.md#how-to-use-in-vonage-unified-environment).
 
 Changes Made
 ======================
@@ -229,7 +229,7 @@ Style for mouse hover instruction:
     transform: scale(1);
 }
 ```
-How to Use this app in Vonage Unified environment
+How to Use in Vonage Unified environment
 ======================
 1. Change the library name from `@opentok/client` to `@vonage/client-sdk-video` in `package.json` and `src/opentok.ts`.
 2. Obtain Session credentials from the Unified dashboard and add them in `js/config.js`.
